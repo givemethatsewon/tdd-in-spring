@@ -1,0 +1,16 @@
+### Save Exam Score
+PUT http://localhost:8080/exam/midterm/score
+Content-Type: application/json
+
+{
+  "studentName": "John Doe",
+  "koScore": 80,
+  "englishScore": 75,
+  "mathScore": 90
+}
+
+### Get Passing Students
+GET http://localhost:8080/exam/midterm/pass
+
+### Get Failing Students
+GET http://localhost:8080/exam/midterm/fail

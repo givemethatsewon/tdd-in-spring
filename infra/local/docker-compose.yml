@@ -12,14 +12,17 @@ services:
       - 3307:3306
     volumes:
       - ./dbdata:/var/lib/mysql
+
   local-db-migrate:
     image: flyway/flyway:7
-    restart: always
     environment:
-      - FLYWAY_DB_URL=jdbc:mysql://local-db/score
-      - FLYWAY_DB_USER=root
-      - FLYWAY_DB_PASSWORD=password
+      - FLYWAY_URL=jdbc:mysql://local-db/score
+      - FLYWAY_USER=root
+      - FLYWAY_PASSWORD=password
+      - FLYWAY_LOCATIONS=filesystem:/flyway/sql
     command: migrate
     volumes:
       - ../../db/flyway.conf:/flyway/conf/flyway.conf
       - ../../db/migration:/flyway/sql
+    depends_on:
+      - local-db
