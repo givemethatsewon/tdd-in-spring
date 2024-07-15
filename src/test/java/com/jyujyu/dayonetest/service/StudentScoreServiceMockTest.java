@@ -3,10 +3,7 @@ package com.jyujyu.dayonetest.service;
 import com.jyujyu.dayonetest.MyCalculator;
 import com.jyujyu.dayonetest.controller.response.ExamFailStudentResponse;
 import com.jyujyu.dayonetest.controller.response.ExamPassStudentResponse;
-import com.jyujyu.dayonetest.model.StudentFail;
-import com.jyujyu.dayonetest.model.StudentPass;
-import com.jyujyu.dayonetest.model.StudentScore;
-import com.jyujyu.dayonetest.model.StudentScoreTestDataBuilder;
+import com.jyujyu.dayonetest.model.*;
 import com.jyujyu.dayonetest.repository.StudentFailRepository;
 import com.jyujyu.dayonetest.repository.StudentPassRepository;
 import com.jyujyu.dayonetest.repository.StudentScoreRepository;
@@ -86,8 +83,8 @@ public class StudentScoreServiceMockTest {
 
         // when
         studentScoreService.saveScore(
-                expectedStudentPass.getStudentName(),
-                expectedStudentPass.getExam(),
+                expectedStudentScore.getStudentName(),
+                expectedStudentScore.getExam(),
                 expectedStudentScore.getKorScore(),
                 expectedStudentScore.getEngScore(),
                 expectedStudentScore.getMathScore()
@@ -118,30 +115,17 @@ public class StudentScoreServiceMockTest {
     @DisplayName("성적 저장 로직 검증 / 60점 이하인 경우")
     public void saveScoreMockTest2() {
         // given
-        String givenStudentName = "testName";
-        String givenExam = "testExam";
-        Integer givenKorScore = 10;
-        Integer givenEnglishScore = 59;
-        Integer givenMathScore = 50;
-
-        StudentScore expectedStudentScore = StudentScore
-                .builder()
-                .studentName(givenStudentName)
-                .exam(givenExam)
-                .korScore(givenKorScore)
-                .engScore(givenEnglishScore)
-                .mathScore(givenMathScore)
-                .build();
+        StudentScore expectedStudentScore = StudentScoreFixture.failed();
 
         StudentPass expectedStudentFail = StudentPass
                 .builder()
-                .studentName(givenStudentName)
-                .exam(givenExam)
+                .studentName(expectedStudentScore.getStudentName())
+                .exam(expectedStudentScore.getExam())
                 .avgScore(
                         (new MyCalculator(0.0))
-                                .add(givenKorScore.doubleValue())
-                                .add(givenEnglishScore.doubleValue())
-                                .add(givenMathScore.doubleValue())
+                                .add(expectedStudentScore.getKorScore().doubleValue())
+                                .add(expectedStudentScore.getEngScore().doubleValue())
+                                .add(expectedStudentScore.getMathScore().doubleValue())
                                 .divide(3.0)
                                 .getResult()
                 )
@@ -152,11 +136,11 @@ public class StudentScoreServiceMockTest {
 
         // when
         studentScoreService.saveScore(
-                givenStudentName,
-                givenExam,
-                givenKorScore,
-                givenEnglishScore,
-                givenMathScore
+                expectedStudentScore.getStudentName(),
+                expectedStudentScore.getExam(),
+                expectedStudentScore.getKorScore(),
+                expectedStudentScore.getEngScore(),
+                expectedStudentScore.getMathScore()
         );
 
         // then
