@@ -32,11 +32,10 @@ public class StudentScoreService {
 
         studentScoreRepository.save(studentScore);
 
-        MyCalculator calculator = new MyCalculator(0.0);
-        Double avgScore = calculator
+        Double avgScore = (new MyCalculator(0.0))
                 .add(korScore.doubleValue())
                 .add(engScore.doubleValue())
-                .add(engScore.doubleValue())
+                .add(mathScore.doubleValue())
                 .divide(3.0)
                 .getResult();
 
