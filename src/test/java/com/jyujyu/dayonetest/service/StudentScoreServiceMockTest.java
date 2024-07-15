@@ -6,6 +6,7 @@ import com.jyujyu.dayonetest.controller.response.ExamPassStudentResponse;
 import com.jyujyu.dayonetest.model.StudentFail;
 import com.jyujyu.dayonetest.model.StudentPass;
 import com.jyujyu.dayonetest.model.StudentScore;
+import com.jyujyu.dayonetest.model.StudentScoreTestDataBuilder;
 import com.jyujyu.dayonetest.repository.StudentFailRepository;
 import com.jyujyu.dayonetest.repository.StudentPassRepository;
 import com.jyujyu.dayonetest.repository.StudentScoreRepository;
@@ -65,30 +66,19 @@ public class StudentScoreServiceMockTest {
     @DisplayName("성적 저장 로직 검증 / 60점 이상인 경우")
     public void saveScoreMockTest1() {
         // given
-        String givenStudentName = "testName";
-        String givenExam = "testExam";
-        Integer givenKorScore = 100;
-        Integer givenEnglishScore = 100;
-        Integer givenMathScore = 60;
-
-        StudentScore expectedStudentScore = StudentScore
-                .builder()
-                .studentName(givenStudentName)
-                .exam(givenExam)
-                .korScore(givenKorScore)
-                .engScore(givenEnglishScore)
-                .mathScore(givenMathScore)
+        StudentScore expectedStudentScore = StudentScoreTestDataBuilder.passed()
+                .studentName("Overrided Student Name") // 빌더 클래스를 리턴하기 때문에 오버라이딩해서 사용 가능
                 .build();
 
         StudentPass expectedStudentPass = StudentPass
                 .builder()
-                .studentName(givenStudentName)
-                .exam(givenExam)
+                .studentName(expectedStudentScore.getStudentName())
+                .exam(expectedStudentScore.getExam())
                 .avgScore(
                         (new MyCalculator(0.0))
-                                .add(givenKorScore.doubleValue())
-                                .add(givenEnglishScore.doubleValue())
-                                .add(givenMathScore.doubleValue())
+                                .add(expectedStudentScore.getKorScore().doubleValue())
+                                .add(expectedStudentScore.getEngScore().doubleValue())
+                                .add(expectedStudentScore.getMathScore().doubleValue())
                                 .divide(3.0)
                                 .getResult()
                 )
@@ -96,11 +86,11 @@ public class StudentScoreServiceMockTest {
 
         // when
         studentScoreService.saveScore(
-                givenStudentName,
-                givenExam,
-                givenKorScore,
-                givenEnglishScore,
-                givenMathScore
+                expectedStudentPass.getStudentName(),
+                expectedStudentPass.getExam(),
+                expectedStudentScore.getKorScore(),
+                expectedStudentScore.getEngScore(),
+                expectedStudentScore.getMathScore()
         );
 
         ArgumentCaptor<StudentScore> studentScoreArgumentCaptor = ArgumentCaptor.forClass(StudentScore.class);
